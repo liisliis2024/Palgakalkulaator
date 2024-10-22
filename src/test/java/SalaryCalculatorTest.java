@@ -1,90 +1,117 @@
 import org.example.SalaryCalculator;
 import org.junit.jupiter.api.Test;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SalaryCalculatorTest {
     SalaryCalculator calc = new SalaryCalculator();
-    DecimalFormat df = new DecimalFormat("#.##");
 
     @Test
     void lowerThanTaxFreeMin() {
-        var example = calc.incomeTax(1000);
-        assertEquals(62, example);
+        BigDecimal grossSalary = BigDecimal.valueOf(1000);
+        var example = calc.incomeTax(grossSalary);
+        assertEquals(BigDecimal.valueOf(62.00), example.setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
     void betweenTaxFreeMinAndMax() {
-        var example = calc.netSalary(1500);
-        assertEquals(1244, example);
+        BigDecimal grossSalary = BigDecimal.valueOf(1500);
+        var example = calc.netSalary(grossSalary);
+        assertEquals(BigDecimal.valueOf(1244.00), example.setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
     void overTaxFreeMax() {
-        var example = calc.netSalary(2200);
-        assertEquals(1696.64, Math.round(example * 100.0) / 100.0);
+        BigDecimal grossSalary = BigDecimal.valueOf(2200);
+        var example = calc.netSalary(grossSalary);
+        assertEquals(BigDecimal.valueOf(1696.64), example.setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void accPensionRate() {
-        var example = calc.accPension(1000);
-        assertEquals(20, example);
+        BigDecimal grossSalary = BigDecimal.valueOf(1000);
+        var example = calc.accPension(grossSalary);
+        assertEquals(BigDecimal.valueOf(20.00), example.setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
     void emtInsuranceRateEmployee() {
-        var example = calc.emtInsuranceEmployee(1000);
-        assertEquals(16, example);
+        BigDecimal grossSalary = BigDecimal.valueOf(1000);
+        var example = calc.emtInsuranceEmployee(grossSalary);
+        assertEquals(BigDecimal.valueOf(16.00), example.setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
     void emtInsuranceRateEmployer() {
-        var example = calc.emtInsuranceEmployer(1000);
-        assertEquals(8, example);
+        BigDecimal grossSalary = BigDecimal.valueOf(1000);
+        var example = calc.emtInsuranceEmployer(grossSalary);
+        assertEquals(BigDecimal.valueOf(8.00), example.setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
     void netSalary() {
-        var example = calc.netSalary(1000);
-        assertEquals(902, example);
+        BigDecimal grossSalary = BigDecimal.valueOf(1000);
+        var example = calc.netSalary(grossSalary);
+        assertEquals(BigDecimal.valueOf(902.00), example.setScale(1, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void payroll() {
+        BigDecimal grossSalary = BigDecimal.valueOf(1000);
+        var example = calc.payroll(grossSalary);
+        assertEquals(BigDecimal.valueOf(1338.00), example.setScale(1, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void incomeTax() {
+        BigDecimal grossSalary = BigDecimal.valueOf(1000);
+        var example = calc.incomeTax(grossSalary);
+        assertEquals(BigDecimal.valueOf(62.00), example.setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
     void calculateIncomeTaxFreeMin() {
-        var example = calc.calculateIncomeTaxFreeMin(1000);
-        assertEquals(654.00, example);
+        BigDecimal grossSalary = BigDecimal.valueOf(1000);
+        var example = calc.calculateIncomeTaxFreeMin(grossSalary);
+        assertEquals(BigDecimal.valueOf(654.00), example.setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
     void calculateIncomeTaxFreeBetweenMinAndMax() {
-        var example = calc.calculateIncomeTaxFreeMin(1689);
-        assertEquals(298.66, Math.round(example * 100.0) / 100.0);
+        BigDecimal grossSalary = BigDecimal.valueOf(1689);
+        var example = calc.calculateIncomeTaxFreeMin(grossSalary);
+        assertEquals(BigDecimal.valueOf(298.66), example.setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void calculateIncomeTaxFreeMax() {
-        var example = calc.calculateIncomeTaxFreeMin(3000);
-        assertEquals(0, example);
+        BigDecimal grossSalary = BigDecimal.valueOf(3000);
+        var example = calc.calculateIncomeTaxFreeMin(grossSalary);
+        assertEquals(BigDecimal.ZERO, example.setScale(0, RoundingMode.HALF_UP));
     }
 
     @Test
     void calculateAnnualTaxFreeMin() {
-        var example = calc.calculateAnnualSalary(900);
-        assertEquals(10800.00, Math.round(example * 100.0) / 100.0);
+        BigDecimal grossSalary = BigDecimal.valueOf(900);
+        var example = calc.calculateAnnualSalary(grossSalary);
+        assertEquals(BigDecimal.valueOf(10800.00), example.setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
     void calculateSocialTax() {
-        var example = calc.calculateSocialTax(1000);
-        assertEquals(330, example);
+        BigDecimal grossSalary = BigDecimal.valueOf(1000);
+        var example = calc.socialTax(grossSalary);
+        assertEquals(BigDecimal.valueOf(330.00), example.setScale(1, RoundingMode.HALF_UP));
     }
 
     @Test
     void calculateNetToGross() {
-        var example = calc.calculateNetToGross(2000);
-        assertEquals(2593.36, Math.round(example * 100.0) / 100.0);
+        BigDecimal netSalary = BigDecimal.valueOf(2000);
+        BigDecimal example = calc.calculateNetToGross(netSalary);
+        assertEquals(BigDecimal.valueOf(2593.36), example.setScale(2, RoundingMode.HALF_UP));
     }
 }
 
