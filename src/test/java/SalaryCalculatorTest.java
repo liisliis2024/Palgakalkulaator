@@ -1,12 +1,12 @@
-import org.example.Palgakalkulaator;
+import org.example.SalaryCalculator;
 import org.junit.jupiter.api.Test;
 
 import java.text.DecimalFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PalgakalkulaatorTest {
-    Palgakalkulaator calc = new Palgakalkulaator();
+public class SalaryCalculatorTest {
+    SalaryCalculator calc = new SalaryCalculator();
     DecimalFormat df = new DecimalFormat("#.##");
 
     @Test
@@ -81,5 +81,10 @@ public class PalgakalkulaatorTest {
         assertEquals(330, example);
     }
 
+    @Test
+    void calculateNetToGross() {
+        var example = calc.calculateNetToGross(2000);
+        assertEquals(2593.36, Math.round(example * 100.0) / 100.0);
+    }
 }
 

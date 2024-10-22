@@ -1,6 +1,11 @@
 package org.example;
 
-public class Palgakalkulaator {
+public class SalaryCalculator {
+
+    // todo: changes types to bigDecimals
+    // todo: create interface Salary
+    // todo: create seperate classes grossSalary, netSalary
+    // todo: igale salaryle tostring meetod, et igauks end ise valja prindiks
 
     public static final double INCOME_TAX_RATE = 0.2;
     public static final double ACC_PENSION_RATE = 0.02;
@@ -11,9 +16,12 @@ public class Palgakalkulaator {
     public static final double TAX_FREE_MIN_SALARY = 1200;
     public static final double TAX_FREE_MAX_SALARY = 2100;
 
+    public double calculateNetToGross(double netSalary) {
+        var grossSalaryNoIncomeTax = netSalary / (1 - INCOME_TAX_RATE);
+        return grossSalaryNoIncomeTax / (1 - EMT_INSURANCE_RATE_EMPLOYEE - ACC_PENSION_RATE);
+    }
 
     public double netSalary(double grossSalary) {
-
         return grossSalary - incomeTax(grossSalary)
                 - accPension(grossSalary)
                 - emtInsuranceEmployee(grossSalary);
