@@ -3,11 +3,9 @@ package org.example;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class SalaryCalculator {
-
-    // todo: create seperate classes netSalary
+public abstract class SalaryCalculator {
+    // todo: netToGross maksuvaba tulu lisamine
     // todo: igale salaryle tostring meetod, et igauks end ise valja prindiks
-    // todo: bigDecimals in tests needs a change
 
     public static final BigDecimal INCOME_TAX_RATE = new BigDecimal(0.2);
     public static final BigDecimal ACC_PENSION_RATE = new BigDecimal(0.02);
@@ -18,20 +16,10 @@ public class SalaryCalculator {
     public static final BigDecimal TAX_FREE_MIN_SALARY = new BigDecimal(1200);
     public static final BigDecimal TAX_FREE_MAX_SALARY = new BigDecimal(2100);
 
-    public BigDecimal calculateNetToGross(BigDecimal netSalary) {
-        BigDecimal one = BigDecimal.ONE;
-        var grossSalaryNoIncomeTax = netSalary.divide(one.subtract(INCOME_TAX_RATE), 10, RoundingMode.HALF_UP);
-        return grossSalaryNoIncomeTax.divide
-                (one.subtract(EMT_INSURANCE_RATE_EMPLOYEE).subtract(ACC_PENSION_RATE), 10, RoundingMode.HALF_UP);
-    }
+    public abstract BigDecimal grossSalary(BigDecimal grossSalary );
+    //public abstract BigDecimal netSalary(BigDecimal grossSalary );
 
-    public BigDecimal netSalary(BigDecimal grossSalary) {
-        return grossSalary.subtract(accPension(grossSalary))
-                .subtract(emtInsuranceEmployee(grossSalary))
-                .subtract(incomeTax(grossSalary));
-    }
-
-    public BigDecimal payroll(BigDecimal grossSalary) {
+    public BigDecimal totalSalary(BigDecimal grossSalary) {
         return grossSalary.add(emtInsuranceEmployer(grossSalary))
                 .add(socialTax(grossSalary));
     }
