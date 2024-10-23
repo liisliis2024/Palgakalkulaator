@@ -1,12 +1,6 @@
-import org.example.SalaryCalculator;
-import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SalaryCalculatorTest {
+public class SalaryTest {
     //SalaryCalculator calc = new SalaryCalculator();
 
 //    @Test

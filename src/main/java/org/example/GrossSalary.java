@@ -2,20 +2,12 @@ package org.example;
 
 import java.math.BigDecimal;
 
-public class GrossSalary extends SalaryCalculator {
+public class GrossSalary extends Salary {
     BigDecimal grossSalary;
-    BigDecimal netSalary;
 
     public GrossSalary() {}
     public GrossSalary(BigDecimal grossSalary) {
         this.grossSalary = grossSalary;
-        this.netSalary = netSalary(grossSalary);
-    }
-
-    public BigDecimal netSalary(BigDecimal grossSalary) {
-       return this.netSalary =  grossSalary.subtract(accPension(grossSalary))
-                .subtract(emtInsuranceEmployee(grossSalary))
-                .subtract(incomeTax(grossSalary));
     }
 
     @Override
