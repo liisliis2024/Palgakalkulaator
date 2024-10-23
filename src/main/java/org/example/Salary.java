@@ -3,9 +3,12 @@ package org.example;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import static org.example.SalaryType.*;
+
 public abstract class Salary {
-    // todo: netToGross maksuvaba tulu lisamine
-    // todo: salaryle tostring meetod, et igauks end ise valja prindiks
+    // todo: netToGross maksuvaba tulu lisamine NetSalary klassi
+    // ka TotalSalary classi puhul arvutame totalSalary() grossSalaryga??
+    BigDecimal grossSalary;
 
     public static final BigDecimal INCOME_TAX_RATE = new BigDecimal(0.2);
     public static final BigDecimal ACC_PENSION_RATE = new BigDecimal(0.02);
@@ -18,25 +21,20 @@ public abstract class Salary {
 
     public abstract BigDecimal grossSalary(BigDecimal grossSalary);
 
-//    public BigDecimal totalSalary(BigDecimal grossSalary) {
-//        return grossSalary.add(emtInsuranceEmployer(grossSalary))
-//                .add(socialTax(grossSalary));
-//    }
-
-    public BigDecimal netSalary(BigDecimal grossSalary) {
-        return grossSalary.subtract(accPension(grossSalary))
-                .subtract(emtInsuranceEmployee(grossSalary))
-                .subtract(incomeTax(grossSalary));
+    public BigDecimal netSalary() {
+        return grossSalary.subtract(accPension())
+                .subtract(emtInsuranceEmployee())
+                .subtract(incomeTax());
     }
 
-    public BigDecimal incomeTax(BigDecimal grossSalary) {
-        BigDecimal incomeTaxSum = grossSalary.subtract(accPension(grossSalary))
-                .subtract(emtInsuranceEmployee(grossSalary))
-                .subtract(calculateIncomeTaxFreeMin(grossSalary));
+    public BigDecimal incomeTax() {
+        BigDecimal incomeTaxSum = grossSalary.subtract(accPension())
+                .subtract(emtInsuranceEmployee())
+                .subtract(calculateIncomeTaxFreeMin());
         return incomeTaxSum.multiply(INCOME_TAX_RATE);
     }
 
-    public BigDecimal calculateIncomeTaxFreeMin(BigDecimal grossSalary) {
+    public BigDecimal calculateIncomeTaxFreeMin() {
         var incomeTaxMin = BigDecimal.valueOf(654);
         var incomeTaxMax = BigDecimal.valueOf(900);
 
@@ -50,23 +48,65 @@ public abstract class Salary {
         return incomeTaxMin;
     }
 
-    public BigDecimal calculateAnnualSalary(BigDecimal grossSalary) {
+    public BigDecimal calculateAnnualSalary() {
         return grossSalary.multiply(BigDecimal.valueOf(12));
     }
 
-    public BigDecimal accPension(BigDecimal grossSalary) {
+    public BigDecimal accPension() {
         return grossSalary.multiply(ACC_PENSION_RATE);
     }
 
-    public BigDecimal emtInsuranceEmployee(BigDecimal grossSalary) {
+    public BigDecimal emtInsuranceEmployee() {
         return grossSalary.multiply(EMT_INSURANCE_RATE_EMPLOYEE);
     }
 
-    public BigDecimal emtInsuranceEmployer(BigDecimal grossSalary) {
+    public BigDecimal emtInsuranceEmployer() {
         return grossSalary.multiply(EMT_INSURANCE_RATE_EMPLOYER);
     }
 
-    public BigDecimal socialTax(BigDecimal grossSalary) {
+    public BigDecimal socialTax() {
         return grossSalary.multiply(SOCIAL_TAX_RATE);
+    }
+
+    public BigDecimal totalSalary() {
+        return grossSalary.add(emtInsuranceEmployer())
+                .add(socialTax());
+    }
+
+    public static Salary getName(BigDecimal salary, SalaryType type) {
+        return switch (type) {
+            case NET -> new NetSalary(salary);
+            case GROSS -> new GrossSalary(salary);
+            case TOTAL -> new TotalSalary(salary);
+        };
+    }
+
+    @Override
+    public String toString() {
+        var allData = new StringBuilder();
+
+        allData.append("Total Salary: ")
+                .append(totalSalary().setScale(2, RoundingMode.HALF_UP))
+                .append("Social Tax: ")
+                .append(socialTax().setScale(2, RoundingMode.HALF_UP))
+                .append("Unemployment insurance contribution (employer): ")
+                .append(emtInsuranceEmployer().setScale(2, RoundingMode.HALF_UP))
+                .append("Gross Salary: ")
+                .append(grossSalary.setScale(2, RoundingMode.HALF_UP))
+                .append("Savings pension (II pillar): ")
+                .append(accPension().setScale(2, RoundingMode.HALF_UP))
+                .append("Unemployment insurance contribution (employee): ")
+                .append(emtInsuranceEmployee().setScale(2, RoundingMode.HALF_UP))
+                .append("Income Tax: ")
+                .append(incomeTax().setScale(2, RoundingMode.HALF_UP))
+                .append("Net Salary: ")
+                .append(netSalary().setScale(2, RoundingMode.HALF_UP));
+
+        return allData.toString();
+    }
+
+    public static void main(String[] args) {
+        Salary example = Salary.getName(BigDecimal.valueOf(1000), GROSS);
+        System.out.println(example);
     }
 }

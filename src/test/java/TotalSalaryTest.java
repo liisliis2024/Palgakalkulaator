@@ -14,4 +14,5 @@ public class TotalSalaryTest {
     public void totalSalaryCorrect() {
         assertEquals(BigDecimal.valueOf(1000), example.grossSalary(BigDecimal.valueOf(1338)).setScale(0, RoundingMode.HALF_UP));
     }
+
 }
