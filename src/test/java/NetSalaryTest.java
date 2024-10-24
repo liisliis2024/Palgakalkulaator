@@ -1,3 +1,4 @@
+import org.example.GrossSalary;
 import org.example.NetSalary;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,11 @@ public class NetSalaryTest {
 
     @Test
     void grossSalaryIsCorrect() {
+        NetSalary obj = new NetSalary(BigDecimal.valueOf(1000));
+        assertEquals(BigDecimal.valueOf(1296.68), obj.getGrossSalary().setScale(2, RoundingMode.HALF_UP));
+    }
+    @Test
+    void grossSalaryIsCorrectB() {
         NetSalary obj = new NetSalary(BigDecimal.valueOf(1000));
         assertEquals(BigDecimal.valueOf(1296.68), obj.getGrossSalary().setScale(2, RoundingMode.HALF_UP));
     }
@@ -43,4 +49,12 @@ public class NetSalaryTest {
         NetSalary obj = new NetSalary(BigDecimal.valueOf(1300));
         assertEquals(BigDecimal.valueOf(370.98), obj.calculateIncomeTaxFreeMin().setScale(2, RoundingMode.HALF_UP));
     }
+
+    @Test
+    void accPensionRateCorrect() {
+        NetSalary obj = new NetSalary(BigDecimal.valueOf(1300));
+        assertEquals(BigDecimal.valueOf(31.79), obj.accPension().setScale(2, RoundingMode.HALF_UP));
+    }
+
+
 }

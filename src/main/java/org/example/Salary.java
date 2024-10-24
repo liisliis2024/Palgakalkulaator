@@ -11,6 +11,7 @@ public abstract class Salary {
     // ka TotalSalary classi puhul arvutame totalSalary() grossSalaryga??
     BigDecimal grossSalary;
     BigDecimal netSalary;
+    BigDecimal incomeTaxMin;
 
     public static final BigDecimal INCOME_TAX_RATE = new BigDecimal(0.2);
     public static final BigDecimal ACC_PENSION_RATE = new BigDecimal(0.02);
@@ -39,16 +40,16 @@ public abstract class Salary {
 
     public BigDecimal calculateIncomeTaxFreeMin() {
         var incomeTaxMax = BigDecimal.valueOf(900);
-        var incomeTaxMin = INCOME_TAX_MIN;
+        incomeTaxMin = INCOME_TAX_MIN;
 
         if (grossSalary.compareTo(TAX_FREE_MIN_SALARY) >= 0 && grossSalary.compareTo(TAX_FREE_MAX_SALARY) < 0) {
-            incomeTaxMin = (incomeTaxMin.subtract(incomeTaxMin
+            this.incomeTaxMin = (incomeTaxMin.subtract(incomeTaxMin
                     .divide(incomeTaxMax, 10, RoundingMode.HALF_UP)
                     .multiply(grossSalary.subtract(TAX_FREE_MIN_SALARY))));
         } else if (grossSalary.compareTo(TAX_FREE_MAX_SALARY) >= 0) {
-            incomeTaxMin = BigDecimal.ZERO;
+            this.incomeTaxMin = BigDecimal.ZERO;
         } else if (grossSalary.compareTo(TAX_FREE_MIN_SALARY) < 0) {
-            incomeTaxMin = grossSalary;
+            this.incomeTaxMin = grossSalary;
         }
         return incomeTaxMin;
     }
@@ -105,7 +106,7 @@ public abstract class Salary {
                 .append("Income Tax: ")
                 .append(incomeTax().setScale(2, RoundingMode.HALF_UP))
                 .append("Net Salary: ")
-                .append(netSalary().setScale(2, RoundingMode.HALF_UP));
+                .append(netSalary.setScale(2, RoundingMode.HALF_UP));
 
         return allData.toString();
     }
