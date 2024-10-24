@@ -13,9 +13,34 @@ public class NetSalaryTest {
         NetSalary obj = new NetSalary(BigDecimal.valueOf(1000));
         assertEquals(BigDecimal.valueOf(1296.68), obj.getGrossSalary().setScale(2, RoundingMode.HALF_UP));
     }
-//    @Test
-//    void netSalaryIsCorrect() {
-//        NetSalary obj = new NetSalary(BigDecimal.valueOf(1000));
-//        assertEquals(BigDecimal.valueOf(1000), obj.netSalary().setScale(0, RoundingMode.HALF_UP));
-//    }
+
+    @Test
+    void incomeTaxFreeMinIsCorrect() {
+        NetSalary obj = new NetSalary(BigDecimal.valueOf(1500));
+        assertEquals(BigDecimal.valueOf(138.77), obj.calculateIncomeTaxFreeMin().setScale(2, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void netSalaryIsCorrect() {
+        NetSalary obj = new NetSalary(BigDecimal.valueOf(1000));
+        assertEquals(BigDecimal.valueOf(1000), obj.netSalary().setScale(0, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void netSalaryLowerThenTaxFreeMinNetSalary() {
+        NetSalary obj = new NetSalary(BigDecimal.valueOf(450));
+        assertEquals(BigDecimal.valueOf(450), obj.calculateIncomeTaxFreeMin().setScale(0, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void netSalaryHigherThenTaxFreeMinNetSalary() {
+        NetSalary obj = new NetSalary(BigDecimal.valueOf(1700));
+        assertEquals(BigDecimal.ZERO, obj.calculateIncomeTaxFreeMin().setScale(0, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void netSalaryBetweenTaxFreeMinAndMaxNetSalary() {
+        NetSalary obj = new NetSalary(BigDecimal.valueOf(1300));
+        assertEquals(BigDecimal.valueOf(370.98), obj.calculateIncomeTaxFreeMin().setScale(2, RoundingMode.HALF_UP));
+    }
 }

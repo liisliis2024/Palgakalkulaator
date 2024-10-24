@@ -4,11 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class TotalSalary extends Salary {
-    public TotalSalary() {
-    }
-
     public TotalSalary(BigDecimal totalSalary) {
         this.grossSalary = grossSalary(totalSalary);
+        this.netSalary = netSalary();
     }
 
     @Override

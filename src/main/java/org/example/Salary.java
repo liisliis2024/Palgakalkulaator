@@ -7,8 +7,10 @@ import static org.example.SalaryType.*;
 
 public abstract class Salary {
     // todo: netToGross maksuvaba tulu lisamine NetSalary klassi
+    // todo: tosta nii, koikide arvude jaoks oleks eraldi fieldid ja see arvutaks konstruktoris valja
     // ka TotalSalary classi puhul arvutame totalSalary() grossSalaryga??
     BigDecimal grossSalary;
+    BigDecimal netSalary;
 
     public static final BigDecimal INCOME_TAX_RATE = new BigDecimal(0.2);
     public static final BigDecimal ACC_PENSION_RATE = new BigDecimal(0.02);
@@ -18,6 +20,7 @@ public abstract class Salary {
 
     public static final BigDecimal TAX_FREE_MIN_SALARY = new BigDecimal(1200);
     public static final BigDecimal TAX_FREE_MAX_SALARY = new BigDecimal(2100);
+    public static final BigDecimal INCOME_TAX_MIN = new BigDecimal(654);
 
     public abstract BigDecimal grossSalary(BigDecimal grossSalary);
 
@@ -35,8 +38,8 @@ public abstract class Salary {
     }
 
     public BigDecimal calculateIncomeTaxFreeMin() {
-        var incomeTaxMin = BigDecimal.valueOf(654);
         var incomeTaxMax = BigDecimal.valueOf(900);
+        var incomeTaxMin = INCOME_TAX_MIN;
 
         if (grossSalary.compareTo(TAX_FREE_MIN_SALARY) >= 0 && grossSalary.compareTo(TAX_FREE_MAX_SALARY) < 0) {
             incomeTaxMin = (incomeTaxMin.subtract(incomeTaxMin
@@ -44,6 +47,8 @@ public abstract class Salary {
                     .multiply(grossSalary.subtract(TAX_FREE_MIN_SALARY))));
         } else if (grossSalary.compareTo(TAX_FREE_MAX_SALARY) >= 0) {
             incomeTaxMin = BigDecimal.ZERO;
+        } else if (grossSalary.compareTo(TAX_FREE_MIN_SALARY) < 0) {
+            incomeTaxMin = grossSalary;
         }
         return incomeTaxMin;
     }

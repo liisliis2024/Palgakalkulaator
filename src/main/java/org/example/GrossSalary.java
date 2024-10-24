@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class GrossSalary extends Salary {
     public GrossSalary(BigDecimal grossSalary) {
         this.grossSalary = grossSalary;
+        this.netSalary = netSalary();
     }
 
     @Override
