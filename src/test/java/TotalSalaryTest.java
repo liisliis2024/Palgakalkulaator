@@ -1,4 +1,6 @@
-import org.example.GrossSalary;
+import org.example.Salary;
+import org.example.SalaryParameters;
+import org.example.SalaryType;
 import org.example.TotalSalary;
 import org.junit.jupiter.api.Test;
 
@@ -8,12 +10,11 @@ import java.math.RoundingMode;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TotalSalaryTest {
-    //TotalSalary example = new TotalSalary();
 
     @Test
     public void totalSalaryCorrect() {
-        TotalSalary example = new TotalSalary(BigDecimal.valueOf(1338));
-        assertEquals(BigDecimal.valueOf(1000), example.grossSalary(BigDecimal.valueOf(1338)).setScale(0, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1338"), SalaryType.TOTAL, new SalaryParameters());
+        assertEquals(new BigDecimal("1000"), newSalary.grossSalary.setScale(0, RoundingMode.HALF_UP));
     }
 
 }

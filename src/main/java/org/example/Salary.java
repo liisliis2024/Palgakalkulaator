@@ -6,35 +6,55 @@ import java.math.RoundingMode;
 import static org.example.SalaryType.*;
 
 public abstract class Salary {
-    // todo: netToGross maksuvaba tulu lisamine NetSalary klassi
     // todo: tosta nii, koikide arvude jaoks oleks eraldi fieldid ja see arvutaks konstruktoris valja
     // ka TotalSalary classi puhul arvutame totalSalary() grossSalaryga??
-    BigDecimal grossSalary;
-    BigDecimal netSalary;
-    BigDecimal incomeTaxMin;
+    public BigDecimal grossSalary;
+    public BigDecimal incomeTaxMin;
 
-    public static final BigDecimal INCOME_TAX_RATE = new BigDecimal(0.2);
-    public static final BigDecimal ACC_PENSION_RATE = new BigDecimal(0.02);
-    public static final BigDecimal EMT_INSURANCE_RATE_EMPLOYEE = new BigDecimal(0.016);
-    public static final BigDecimal SOCIAL_TAX_RATE = new BigDecimal(0.33);
-    public static final BigDecimal EMT_INSURANCE_RATE_EMPLOYER = new BigDecimal(0.008);
+    public SalaryParameters salaryParameters;
 
-    public static final BigDecimal TAX_FREE_MIN_SALARY = new BigDecimal(1200);
-    public static final BigDecimal TAX_FREE_MAX_SALARY = new BigDecimal(2100);
-    public static final BigDecimal INCOME_TAX_MIN = new BigDecimal(654);
+    public static final BigDecimal INCOME_TAX_RATE = new BigDecimal("0.2");
+    public static final BigDecimal ACC_PENSION_RATE = new BigDecimal("0.02");
+    public static final BigDecimal EMT_INSURANCE_RATE_EMPLOYEE = new BigDecimal("0.016");
+    public static final BigDecimal SOCIAL_TAX_RATE = new BigDecimal("0.33");
+    public static final BigDecimal EMT_INSURANCE_RATE_EMPLOYER = new BigDecimal("0.008");
 
-    public abstract BigDecimal grossSalary(BigDecimal grossSalary);
+    public static final BigDecimal TAX_FREE_MIN_SALARY = new BigDecimal("1200");
+    public static final BigDecimal TAX_FREE_MAX_SALARY = new BigDecimal("2100");
+    public static final BigDecimal INCOME_TAX_MIN = new BigDecimal("654");
+
+    public abstract BigDecimal grossSalary(BigDecimal salary);
+    public Salary(BigDecimal salary, SalaryParameters salaryParameters) {
+        this.salaryParameters = salaryParameters;
+        this.grossSalary = grossSalary(salary);
+    }
 
     public BigDecimal netSalary() {
-        return grossSalary.subtract(accPension())
-                .subtract(emtInsuranceEmployee())
-                .subtract(incomeTax());
+        BigDecimal netSalary = grossSalary;
+
+        if (salaryParameters.considerPension) {
+            netSalary = netSalary.subtract(accPension());
+        }
+        if (salaryParameters.considerEmployeeInsuraceTax) {
+            netSalary = netSalary.subtract(emtInsuranceEmployee());
+        }
+        netSalary = netSalary.subtract(incomeTax());
+
+        return netSalary;
     }
 
     public BigDecimal incomeTax() {
-        BigDecimal incomeTaxSum = grossSalary.subtract(accPension())
-                .subtract(emtInsuranceEmployee())
-                .subtract(calculateIncomeTaxFreeMin());
+
+        BigDecimal incomeTaxSum = grossSalary;
+        if (salaryParameters.considerPension) {
+            incomeTaxSum = incomeTaxSum.subtract(accPension());
+        }
+        if (salaryParameters.considerEmployeeInsuraceTax) {
+            incomeTaxSum = incomeTaxSum.subtract(emtInsuranceEmployee());
+        }
+        if (salaryParameters.considerTaxFreeIncome) {
+            incomeTaxSum = incomeTaxSum.subtract(calculateIncomeTaxFreeMin());
+        }
         return incomeTaxSum.multiply(INCOME_TAX_RATE);
     }
 
@@ -48,7 +68,7 @@ public abstract class Salary {
                     .multiply(grossSalary.subtract(TAX_FREE_MIN_SALARY))));
         } else if (grossSalary.compareTo(TAX_FREE_MAX_SALARY) >= 0) {
             this.incomeTaxMin = BigDecimal.ZERO;
-        } else if (grossSalary.compareTo(TAX_FREE_MIN_SALARY) < 0) {
+        } else if (grossSalary.compareTo(INCOME_TAX_MIN) < 0) {
             this.incomeTaxMin = grossSalary;
         }
         return incomeTaxMin;
@@ -75,15 +95,18 @@ public abstract class Salary {
     }
 
     public BigDecimal totalSalary() {
-        return grossSalary.add(emtInsuranceEmployer())
-                .add(socialTax());
+        var totalSalary = grossSalary.add(socialTax());
+        if (salaryParameters.considerEmployerInsuraceTax) {
+            totalSalary = totalSalary.add(emtInsuranceEmployer());
+        }
+        return totalSalary;
     }
 
-    public static Salary getName(BigDecimal salary, SalaryType type) {
+    public static Salary createNewSalary(BigDecimal salary, SalaryType type, SalaryParameters salaryParameters) {
         return switch (type) {
-            case NET -> new NetSalary(salary);
-            case GROSS -> new GrossSalary(salary);
-            case TOTAL -> new TotalSalary(salary);
+            case NET -> new NetSalary(salary, salaryParameters);
+            case GROSS -> new GrossSalary(salary, salaryParameters);
+            case TOTAL -> new TotalSalary(salary, salaryParameters);
         };
     }
 
@@ -106,13 +129,13 @@ public abstract class Salary {
                 .append("Income Tax: ")
                 .append(incomeTax().setScale(2, RoundingMode.HALF_UP))
                 .append("Net Salary: ")
-                .append(netSalary.setScale(2, RoundingMode.HALF_UP));
+                .append(netSalary().setScale(2, RoundingMode.HALF_UP));
 
         return allData.toString();
     }
 
     public static void main(String[] args) {
-        Salary example = Salary.getName(BigDecimal.valueOf(1000), GROSS);
+        Salary example = Salary.createNewSalary(BigDecimal.valueOf(1000), GROSS,new SalaryParameters());
         System.out.println(example);
     }
 }

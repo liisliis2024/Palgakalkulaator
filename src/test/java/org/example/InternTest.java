@@ -20,6 +20,8 @@ class InternTest {
         interns.add(new Intern("Mikk Sarv", 37, Haircolour.BROWN));
 
         interns.sort(Intern.byName().thenComparing(Intern.byHaircolour().thenComparing(Intern.byAge())));
+        interns.sort(Intern.byNameLength().thenComparing(Intern.byHaircolour().thenComparing(Intern.byAge()
+        )));
         System.out.println(interns);
 
     }

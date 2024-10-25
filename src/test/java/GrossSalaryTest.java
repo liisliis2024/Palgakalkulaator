@@ -1,4 +1,7 @@
 import org.example.GrossSalary;
+import org.example.Salary;
+import org.example.SalaryParameters;
+import org.example.SalaryType;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -10,86 +13,111 @@ public class GrossSalaryTest {
 
     @Test
     public void netSalaryCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(902), example.netSalary().setScale(0, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("902"), newSalary.netSalary().setScale(0, RoundingMode.HALF_UP));
     }
 
     @Test
     public void grossSalaryCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(902), example.netSalary().setScale(0, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("902"), newSalary.netSalary().setScale(0, RoundingMode.HALF_UP));
     }
 
     @Test
     void lowerThanTaxFreeMinCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(62.00), example.incomeTax().setScale(1, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("62.00"), newSalary.incomeTax().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void betweenTaxFreeMinAndMaxCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1500));
-        assertEquals(BigDecimal.valueOf(1244.00), example.netSalary().setScale(1, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1500"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("1244.00"), newSalary.netSalary().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void overTaxFreeMaxCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(2000));
-        assertEquals(BigDecimal.valueOf(1556.93), example.netSalary().setScale(2, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("2000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("1556.93"), newSalary.netSalary().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void accPensionRateCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(20.00), example.accPension().setScale(1, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("20.00"), newSalary.accPension().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void emtInsuranceRateEmployeeCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(16.00), example.emtInsuranceEmployee().setScale(1, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("16.00"), newSalary.emtInsuranceEmployee().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void emtInsuranceRateEmployerCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(8.00), example.emtInsuranceEmployer().setScale(1, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("8.00"), newSalary.emtInsuranceEmployer().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void incomeTaxCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(62.00), example.incomeTax().setScale(1, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("62.00"), newSalary.incomeTax().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void IncomeTaxFreeMinCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(654.00), example.calculateIncomeTaxFreeMin().setScale(1, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("654.00"), newSalary.calculateIncomeTaxFreeMin().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void IncomeTaxFreeBetweenMinAndMaxCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1689));
-
-        assertEquals(BigDecimal.valueOf(298.66), example.calculateIncomeTaxFreeMin().setScale(2, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1689"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("298.66"), newSalary.calculateIncomeTaxFreeMin().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
     void IncomeTaxFreeMaxCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(3000));
-        assertEquals(BigDecimal.ZERO, example.calculateIncomeTaxFreeMin().setScale(0, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("3000"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("0"), newSalary.calculateIncomeTaxFreeMin().setScale(0, RoundingMode.HALF_UP));
     }
 
     @Test
     void AnnualSalaryCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(900));
-        assertEquals(BigDecimal.valueOf(10800.00), example.calculateAnnualSalary().setScale(1, RoundingMode.HALF_UP));
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("900"), SalaryType.GROSS, new SalaryParameters());
+        assertEquals(new BigDecimal("10800.00"), newSalary.calculateAnnualSalary().setScale(2, RoundingMode.HALF_UP));
     }
 
     @Test
-    void totalSalaryCorrect() {
-        GrossSalary example = new GrossSalary(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(1338.00), example.totalSalary().setScale(1, RoundingMode.HALF_UP));
+    void considerTaxFreeIncomeFalse() {
+        SalaryParameters parameters = new SalaryParameters();
+        parameters.setConsiderTaxFreeIncome(false);
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1500"), SalaryType.GROSS, parameters);
+        assertEquals(new BigDecimal("1156.80"), newSalary.netSalary().setScale(2, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void considerPensionFalse() {
+        SalaryParameters parameters = new SalaryParameters();
+        parameters.setConsiderPension(false);
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1600"), SalaryType.GROSS, parameters);
+        assertEquals(new BigDecimal("1332.19"), newSalary.netSalary().setScale(2, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void considerEmployerInsuranceTaxFalse() {
+        SalaryParameters parameters = new SalaryParameters();
+        parameters.setConsiderEmployerInsuraceTax(false);
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1700"), SalaryType.GROSS, parameters);
+        assertEquals(new BigDecimal("1369.17"), newSalary.netSalary().setScale(2, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void considerEmployeeInsuranceTaxFalse() {
+        SalaryParameters parameters = new SalaryParameters();
+        parameters.setConsiderEmployeeInsuraceTax(false);
+        Salary newSalary = Salary.createNewSalary(new BigDecimal("1500"), SalaryType.GROSS, parameters);
+        assertEquals(new BigDecimal("1263.20"), newSalary.netSalary().setScale(2, RoundingMode.HALF_UP));
     }
 }

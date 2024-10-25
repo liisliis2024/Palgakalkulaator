@@ -4,18 +4,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class TotalSalary extends Salary {
-    public TotalSalary(BigDecimal totalSalary) {
-        this.grossSalary = grossSalary(totalSalary);
-        this.netSalary = netSalary();
+    BigDecimal totalSalary;
+
+    public TotalSalary(BigDecimal totalSalary, SalaryParameters salaryParameters) {
+        super(totalSalary, salaryParameters);
     }
 
     @Override
-    public BigDecimal grossSalary(BigDecimal totalSalary) {
-        return this.grossSalary = totalSalary.divide(BigDecimal.ONE.add(SOCIAL_TAX_RATE)
+    public BigDecimal grossSalary(BigDecimal salary) {
+        return this.grossSalary = salary.divide(BigDecimal.ONE.add(SOCIAL_TAX_RATE)
                 .add(EMT_INSURANCE_RATE_EMPLOYER), 10, RoundingMode.HALF_UP);
-    }
-
-    public BigDecimal getGrossSalary() {
-        return grossSalary;
     }
 }
