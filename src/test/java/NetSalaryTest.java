@@ -95,6 +95,7 @@ public class NetSalaryTest {
         Salary newSalary = Salary.createNewSalary(new BigDecimal("900"), SalaryType.NET, new SalaryParameters());
         assertEquals(new BigDecimal("11968.88"), newSalary.calculateAnnualSalary().setScale(2, RoundingMode.HALF_UP));
     }
+
     @Test
     void considerTaxFreeIncomeFalse() {
         SalaryParameters parameters = new SalaryParameters();
@@ -110,10 +111,4 @@ public class NetSalaryTest {
         Salary newSalary = Salary.createNewSalary(new BigDecimal("1700"), SalaryType.NET, parameters);
         assertEquals(new BigDecimal("2931.8"), newSalary.totalSalary().setScale(1, RoundingMode.HALF_UP));
     }
-
-//    @Test
-//    void taxFreeMinNetSalaryCorrect() {
-//        Salary newSalary = Salary.createNewSalary(new BigDecimal("1689"), SalaryType.NET, new SalaryParameters());
-//        assertEquals(new BigDecimal("1056.24"), newSalary.calc);
-//    }
 }

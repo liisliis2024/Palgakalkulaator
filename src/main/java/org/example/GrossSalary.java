@@ -3,7 +3,7 @@ package org.example;
 import java.math.BigDecimal;
 
 public class GrossSalary extends Salary {
-    public GrossSalary(BigDecimal grossSalary, SalaryParameters salaryParameters){
+    public GrossSalary(BigDecimal grossSalary, SalaryParameters salaryParameters) {
         super(grossSalary, salaryParameters);
     }
 

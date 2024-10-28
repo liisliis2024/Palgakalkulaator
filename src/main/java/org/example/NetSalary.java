@@ -11,26 +11,40 @@ public class NetSalary extends Salary {
     @Override
     public BigDecimal grossSalary(BigDecimal netSalary) {
         calculateIncomeTaxFreeMinFromNet(netSalary);
-        var grossSalaryNoIncomeTax = netSalary.divide(BigDecimal.ONE.subtract(INCOME_TAX_RATE), 4, RoundingMode.HALF_UP);
+        BigDecimal grossSalaryNoIncomeTax = calculateGrossSalaryNoIncomeTax(netSalary);
 
         if (salaryParameters.considerTaxFreeIncome) {
-            grossSalaryNoIncomeTax = (netSalary.subtract(incomeTaxMin)).divide(BigDecimal.ONE.subtract(INCOME_TAX_RATE), 4, RoundingMode.HALF_UP)
-                    .add(incomeTaxMin);
+            grossSalaryNoIncomeTax = adjustForTaxFreeIncome(netSalary, grossSalaryNoIncomeTax);
         }
-        if (salaryParameters.considerPension && salaryParameters.considerEmployeeInsuraceTax) {
-            return this.grossSalary = grossSalaryNoIncomeTax.divide
-                    (BigDecimal.ONE.subtract(EMT_INSURANCE_RATE_EMPLOYEE).subtract(ACC_PENSION_RATE), 10, RoundingMode.HALF_UP);
-        } else if (!salaryParameters.considerPension && salaryParameters.considerEmployeeInsuraceTax) {
-            return this.grossSalary = grossSalaryNoIncomeTax.divide
-                    (BigDecimal.ONE.subtract(EMT_INSURANCE_RATE_EMPLOYEE), 10, RoundingMode.HALF_UP);
-        } else if (salaryParameters.considerPension) {
-            return this.grossSalary = grossSalaryNoIncomeTax.divide
-                    (BigDecimal.ONE.subtract(ACC_PENSION_RATE), 10, RoundingMode.HALF_UP);
-        } else return this.grossSalary = grossSalaryNoIncomeTax;
+
+        return calculateFinalGrossSalary(grossSalaryNoIncomeTax);
     }
 
+    private BigDecimal calculateGrossSalaryNoIncomeTax(BigDecimal netSalary) {
+        return netSalary.divide(BigDecimal.ONE.subtract(INCOME_TAX_RATE), 4, RoundingMode.HALF_UP);
+    }
 
-    public BigDecimal calculateIncomeTaxFreeMinFromNet(BigDecimal netSalary) {
+    private BigDecimal adjustForTaxFreeIncome(BigDecimal netSalary, BigDecimal grossSalaryNoIncomeTax) {
+        return (netSalary.subtract(incomeTaxMin))
+                .divide(BigDecimal.ONE.subtract(INCOME_TAX_RATE), 4, RoundingMode.HALF_UP)
+                .add(incomeTaxMin);
+    }
+
+    private BigDecimal calculateFinalGrossSalary(BigDecimal grossSalaryNoIncomeTax) {
+        BigDecimal divisor = BigDecimal.ONE;
+
+        if (salaryParameters.considerEmployeeInsuraceTax) {
+            divisor = divisor.subtract(EMT_INSURANCE_RATE_EMPLOYEE);
+        }
+
+        if (salaryParameters.considerPension) {
+            divisor = divisor.subtract(ACC_PENSION_RATE);
+        }
+
+        return this.grossSalary = grossSalaryNoIncomeTax.divide(divisor, 10, RoundingMode.HALF_UP);
+    }
+
+    public void calculateIncomeTaxFreeMinFromNet(BigDecimal netSalary) {
         BigDecimal taxFreeMinNetSalary = calculateTaxFreeNetSalary(TAX_FREE_MIN_SALARY);
         BigDecimal taxFreeMaxNetSalary = calculateTaxFreeNetSalary(TAX_FREE_MAX_SALARY);
 
@@ -44,19 +58,18 @@ public class NetSalary extends Salary {
         } else if (netSalary.compareTo(INCOME_TAX_MIN) < 0) {
             this.incomeTaxMin = netSalary;
         }
-        return incomeTaxMin;
     }
 
-    public BigDecimal calculateTaxFreeNetSalary (BigDecimal salary) {
+    public BigDecimal calculateTaxFreeNetSalary(BigDecimal salary) {
         BigDecimal netSalary = salary;
 
-        if(salaryParameters.considerTaxFreeIncome) {
+        if (salaryParameters.considerTaxFreeIncome) {
             netSalary = netSalary.subtract((salary.multiply(EMT_INSURANCE_RATE_EMPLOYEE)));
         }
-        if(salaryParameters.considerPension) {
+        if (salaryParameters.considerPension) {
             netSalary = netSalary.subtract((salary.multiply(ACC_PENSION_RATE)));
         }
-        if(salaryParameters.considerTaxFreeIncome && salary == TAX_FREE_MIN_SALARY) {
+        if (salaryParameters.considerTaxFreeIncome && salary == TAX_FREE_MIN_SALARY) {
             netSalary = netSalary.subtract(netSalary.subtract(INCOME_TAX_MIN).multiply(INCOME_TAX_RATE));
         } else if (salaryParameters.considerTaxFreeIncome && salary == TAX_FREE_MAX_SALARY) {
             netSalary = netSalary.subtract(netSalary.multiply(INCOME_TAX_RATE));

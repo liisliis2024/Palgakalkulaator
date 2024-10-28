@@ -24,6 +24,7 @@ public abstract class Salary {
     public static final BigDecimal INCOME_TAX_MIN = new BigDecimal("654");
 
     public abstract BigDecimal grossSalary(BigDecimal salary);
+
     public Salary(BigDecimal salary, SalaryParameters salaryParameters) {
         this.salaryParameters = salaryParameters;
         this.grossSalary = grossSalary(salary);
@@ -135,7 +136,7 @@ public abstract class Salary {
     }
 
     public static void main(String[] args) {
-        Salary example = Salary.createNewSalary(BigDecimal.valueOf(1000), GROSS,new SalaryParameters());
+        Salary example = Salary.createNewSalary(BigDecimal.valueOf(1000), GROSS, new SalaryParameters());
         System.out.println(example);
     }
 }
