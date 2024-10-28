@@ -22,21 +22,4 @@ public class SalaryParameters {
     public void setConsiderEmployeeInsuraceTax(boolean considerEmployeeInsuraceTax) {
         this.considerEmployeeInsuraceTax = considerEmployeeInsuraceTax;
     }
-
-    public boolean isConsiderTaxFreeIncome() {
-        return considerTaxFreeIncome;
-    }
-
-    public boolean isConsiderEmployerInsuraceTax() {
-        return considerEmployerInsuraceTax;
-    }
-
-    public boolean isConsiderEmployeeInsuraceTax() {
-        return considerEmployeeInsuraceTax;
-    }
-
-    public boolean isConsiderPension() {
-        return considerPension;
-    }
-
 }

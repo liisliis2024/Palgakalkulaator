@@ -49,7 +49,7 @@ public class NetSalary extends Salary {
             this.incomeTaxMin = netSalary;
         }
     }
-    
+
     public BigDecimal calculateTaxFreeNetSalary(BigDecimal salary) {
         BigDecimal netSalary = salary;
 
