@@ -12,7 +12,10 @@ public class TotalSalary extends Salary {
 
     @Override
     public BigDecimal grossSalary(BigDecimal salary) {
-        return this.grossSalary = salary.divide(BigDecimal.ONE.add(SOCIAL_TAX_RATE)
-                .add(EMT_INSURANCE_RATE_EMPLOYER), 10, RoundingMode.HALF_UP);
+        if (salaryParameters.considerEmployerInsuraceTax){
+            return this.grossSalary = salary.divide(BigDecimal.ONE.add(SOCIAL_TAX_RATE)
+                    .add(EMT_INSURANCE_RATE_EMPLOYER), 10, RoundingMode.HALF_UP);
+        }else return this.grossSalary = salary.divide(BigDecimal.ONE.add(SOCIAL_TAX_RATE)
+                , 10, RoundingMode.HALF_UP);
     }
 }
