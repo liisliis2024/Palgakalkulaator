@@ -13,7 +13,7 @@ public class NetSalary extends Salary {
         calculateIncomeTaxFreeMinFromNet(netSalary);
         BigDecimal grossSalaryNoIncomeTax = calculateGrossSalaryNoIncomeTax(netSalary);
         if (salaryParameters.considerTaxFreeIncome) {
-            grossSalaryNoIncomeTax = adjustForTaxFreeIncome(netSalary, grossSalaryNoIncomeTax);
+            grossSalaryNoIncomeTax = adjustForTaxFreeIncome(netSalary);
         }
         return calculateFinalGrossSalary(grossSalaryNoIncomeTax);
     }
@@ -22,7 +22,7 @@ public class NetSalary extends Salary {
         return netSalary.divide(BigDecimal.ONE.subtract(INCOME_TAX_RATE), 4, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal adjustForTaxFreeIncome(BigDecimal netSalary, BigDecimal grossSalaryNoIncomeTax) {
+    private BigDecimal adjustForTaxFreeIncome(BigDecimal netSalary) {
         return (netSalary.subtract(incomeTaxMin))
                 .divide(BigDecimal.ONE.subtract(INCOME_TAX_RATE), 4, RoundingMode.HALF_UP)
                 .add(incomeTaxMin);
