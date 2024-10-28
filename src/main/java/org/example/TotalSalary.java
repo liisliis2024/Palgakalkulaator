@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class TotalSalary extends Salary {
-    BigDecimal totalSalary;
-
     public TotalSalary(BigDecimal totalSalary, SalaryParameters salaryParameters) {
         super(totalSalary, salaryParameters);
     }
