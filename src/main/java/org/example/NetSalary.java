@@ -12,11 +12,9 @@ public class NetSalary extends Salary {
     public BigDecimal grossSalary(BigDecimal netSalary) {
         calculateIncomeTaxFreeMinFromNet(netSalary);
         BigDecimal grossSalaryNoIncomeTax = calculateGrossSalaryNoIncomeTax(netSalary);
-
         if (salaryParameters.considerTaxFreeIncome) {
             grossSalaryNoIncomeTax = adjustForTaxFreeIncome(netSalary, grossSalaryNoIncomeTax);
         }
-
         return calculateFinalGrossSalary(grossSalaryNoIncomeTax);
     }
 
@@ -32,15 +30,7 @@ public class NetSalary extends Salary {
 
     private BigDecimal calculateFinalGrossSalary(BigDecimal grossSalaryNoIncomeTax) {
         BigDecimal divisor = BigDecimal.ONE;
-
-        if (salaryParameters.considerEmployeeInsuraceTax) {
-            divisor = divisor.subtract(EMT_INSURANCE_RATE_EMPLOYEE);
-        }
-
-        if (salaryParameters.considerPension) {
-            divisor = divisor.subtract(ACC_PENSION_RATE);
-        }
-
+        divisor = applyPensionAndInsurance(divisor, EMT_INSURANCE_RATE_EMPLOYEE, ACC_PENSION_RATE);
         return this.grossSalary = grossSalaryNoIncomeTax.divide(divisor, 10, RoundingMode.HALF_UP);
     }
 
@@ -59,25 +49,31 @@ public class NetSalary extends Salary {
             this.incomeTaxMin = netSalary;
         }
     }
-
+    
     public BigDecimal calculateTaxFreeNetSalary(BigDecimal salary) {
         BigDecimal netSalary = salary;
 
-        if (salaryParameters.considerTaxFreeIncome) {
-            netSalary = netSalary.subtract((salary.multiply(EMT_INSURANCE_RATE_EMPLOYEE)));
+        netSalary = applyPensionAndInsurance(netSalary, (salary.multiply(EMT_INSURANCE_RATE_EMPLOYEE)), (salary.multiply(ACC_PENSION_RATE)));
+        netSalary = includeTaxFreeIncome(salary, netSalary);
+        return netSalary;
+    }
+
+    private BigDecimal applyPensionAndInsurance(BigDecimal netSalary, BigDecimal salary, BigDecimal salary1) {
+        if (salaryParameters.considerEmployeeInsuraceTax) {
+            netSalary = netSalary.subtract(salary);
         }
         if (salaryParameters.considerPension) {
-            netSalary = netSalary.subtract((salary.multiply(ACC_PENSION_RATE)));
+            netSalary = netSalary.subtract(salary1);
         }
+        return netSalary;
+    }
+
+    private BigDecimal includeTaxFreeIncome(BigDecimal salary, BigDecimal netSalary) {
         if (salaryParameters.considerTaxFreeIncome && salary == TAX_FREE_MIN_SALARY) {
             netSalary = netSalary.subtract(netSalary.subtract(INCOME_TAX_MIN).multiply(INCOME_TAX_RATE));
         } else if (salaryParameters.considerTaxFreeIncome && salary == TAX_FREE_MAX_SALARY) {
             netSalary = netSalary.subtract(netSalary.multiply(INCOME_TAX_RATE));
         }
         return netSalary;
-    }
-
-    public BigDecimal getGrossSalary() {
-        return grossSalary;
     }
 }
