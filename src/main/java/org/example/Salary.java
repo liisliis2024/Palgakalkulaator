@@ -6,8 +6,6 @@ import java.math.RoundingMode;
 import static org.example.SalaryType.*;
 
 public abstract class Salary {
-    // todo: tosta nii, koikide arvude jaoks oleks eraldi fieldid ja see arvutaks konstruktoris valja
-    // ka TotalSalary classi puhul arvutame totalSalary() grossSalaryga??
     public BigDecimal grossSalary;
     public BigDecimal incomeTaxMin;
 
