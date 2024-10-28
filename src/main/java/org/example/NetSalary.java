@@ -4,12 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class NetSalary extends Salary {
-    public static final BigDecimal TAX_FREE_MIN_NETSALARY = new BigDecimal(1056.24);
-    public static final BigDecimal TAX_FREE_MAX_NETSALARY = new BigDecimal(1619.52);
-
-    // todo: NetSalary klassis muuda considerTaxFreeIncomeFalse() & considerPensionFalse() &....
-
-
     public NetSalary(BigDecimal netSalary, SalaryParameters salaryParameters) {
         super(netSalary, salaryParameters);
     }
@@ -37,17 +31,37 @@ public class NetSalary extends Salary {
 
 
     public BigDecimal calculateIncomeTaxFreeMinFromNet(BigDecimal netSalary) {
+        BigDecimal taxFreeMinNetSalary = calculateTaxFreeNetSalary(TAX_FREE_MIN_SALARY);
+        BigDecimal taxFreeMaxNetSalary = calculateTaxFreeNetSalary(TAX_FREE_MAX_SALARY);
+
         this.incomeTaxMin = INCOME_TAX_MIN;
-        if (netSalary.compareTo(TAX_FREE_MIN_NETSALARY) >= 0 && netSalary.compareTo(TAX_FREE_MAX_NETSALARY) < 0) {
-            this.incomeTaxMin = (TAX_FREE_MAX_NETSALARY.subtract(netSalary))
+        if (netSalary.compareTo(taxFreeMinNetSalary) >= 0 && netSalary.compareTo(taxFreeMaxNetSalary) < 0) {
+            this.incomeTaxMin = (taxFreeMaxNetSalary.subtract(netSalary))
                     .multiply(INCOME_TAX_MIN)
-                    .divide((TAX_FREE_MAX_NETSALARY.subtract(TAX_FREE_MIN_NETSALARY)), 4, RoundingMode.HALF_UP);
-        } else if (netSalary.compareTo(TAX_FREE_MAX_NETSALARY) >= 0) {
+                    .divide((taxFreeMaxNetSalary.subtract(taxFreeMinNetSalary)), 4, RoundingMode.HALF_UP);
+        } else if (netSalary.compareTo(taxFreeMaxNetSalary) >= 0) {
             this.incomeTaxMin = BigDecimal.ZERO;
         } else if (netSalary.compareTo(INCOME_TAX_MIN) < 0) {
             this.incomeTaxMin = netSalary;
         }
         return incomeTaxMin;
+    }
+
+    public BigDecimal calculateTaxFreeNetSalary (BigDecimal salary) {
+        BigDecimal netSalary = salary;
+
+        if(salaryParameters.considerTaxFreeIncome) {
+            netSalary = netSalary.subtract((salary.multiply(EMT_INSURANCE_RATE_EMPLOYEE)));
+        }
+        if(salaryParameters.considerPension) {
+            netSalary = netSalary.subtract((salary.multiply(ACC_PENSION_RATE)));
+        }
+        if(salaryParameters.considerTaxFreeIncome && salary == TAX_FREE_MIN_SALARY) {
+            netSalary = netSalary.subtract(netSalary.subtract(INCOME_TAX_MIN).multiply(INCOME_TAX_RATE));
+        } else if (salaryParameters.considerTaxFreeIncome && salary == TAX_FREE_MAX_SALARY) {
+            netSalary = netSalary.subtract(netSalary.multiply(INCOME_TAX_RATE));
+        }
+        return netSalary;
     }
 
     public BigDecimal getGrossSalary() {

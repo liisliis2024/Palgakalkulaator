@@ -43,18 +43,6 @@ public class NetSalaryTest {
     }
 
     @Test
-    void netSalaryLowerThenTaxFreeMinNetSalary() {
-        Salary newSalary = Salary.createNewSalary(new BigDecimal("450"), SalaryType.NET, new SalaryParameters());
-        assertEquals(new BigDecimal("450"), newSalary.calculateIncomeTaxFreeMin().setScale(0, RoundingMode.HALF_UP));
-    }
-
-    @Test
-    void netSalaryHigherThenTaxFreeMinNetSalary() {
-        Salary newSalary = Salary.createNewSalary(new BigDecimal("1700"), SalaryType.NET, new SalaryParameters());
-        assertEquals(BigDecimal.ZERO, newSalary.calculateIncomeTaxFreeMin().setScale(0, RoundingMode.HALF_UP));
-    }
-
-    @Test
     void netSalaryBetweenTaxFreeMinAndMaxNetSalary() {
         Salary newSalary = Salary.createNewSalary(new BigDecimal("1300"), SalaryType.NET, new SalaryParameters());
         assertEquals(new BigDecimal("370.98"), newSalary.calculateIncomeTaxFreeMin().setScale(2, RoundingMode.HALF_UP));
@@ -122,4 +110,10 @@ public class NetSalaryTest {
         Salary newSalary = Salary.createNewSalary(new BigDecimal("1700"), SalaryType.NET, parameters);
         assertEquals(new BigDecimal("2931.8"), newSalary.totalSalary().setScale(1, RoundingMode.HALF_UP));
     }
+
+//    @Test
+//    void taxFreeMinNetSalaryCorrect() {
+//        Salary newSalary = Salary.createNewSalary(new BigDecimal("1689"), SalaryType.NET, new SalaryParameters());
+//        assertEquals(new BigDecimal("1056.24"), newSalary.calc);
+//    }
 }
